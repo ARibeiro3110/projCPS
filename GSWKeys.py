@@ -31,7 +31,17 @@ class SecretKey:
         return self.__sk
 
 
+
+class PublicKey:
+    def __init__(self, sk: SecretKey, params: GSWParams):
+        self.pk=sk.PublicKey(params)
+
+    def getPublicKey(self):
+        return self.pk
+
+
 params = GSWParams(L=2, n=3, q=16)
 g= SecretKey(params)
-print(np.random.randint(0,16,size=(3,4)))
-print(g.PublicKey(params))
+print(g.getSecretKey())
+pk= PublicKey(g, params)
+print(pk.getPublicKey())

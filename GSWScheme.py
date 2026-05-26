@@ -1,20 +1,25 @@
 from GSWParams import *
 import numpy as np
 from GSWGadgets import *
+from GSWKeys import *
 
 class GSW:
     def __init__(self, seed: int | None = None):
         self.params = None
+        self.__sk = None
+        self.pk = None
         self.rng = np.random.default_rng(seed)
 
     def Setup(self, L: int, n: int, q: int) -> None: #chi: callable, m: int
         self.params = GSWParams(L=L,n=n, q=q)
 
     def SecretKeyGen(self) -> SecretKey:
-        pass
-
-    def PublicKeyGen(self, sk: SecretKey) -> PublicKey:
-        pass
+        sk= SecretKey(self.params)
+        self.__sk = sk
+        
+    def PublicKeyGen(self) -> PublicKey:
+        pk= PublicKey(self.__sk, self.params)
+        self.pk=pk
 
     def Enc(self, pk: PublicKey, mu: int) -> np.ndarray:
         pass
