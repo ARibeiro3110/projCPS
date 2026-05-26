@@ -1,33 +1,32 @@
 from numpy import ceil, log2
 
 class GSWParams:
-    
-    def __init__(self, L, n, q):
-        self.L = L
+
+    def __init__(self, n: int, q: int, sigma: float):
         self.n = n
         self.q = q
-        self.sigma = 3.2 #Mudar depois para ser tal que prob B negligible
-        self.l= int(ceil(log2(q))) + 1
-        self.m = self.l*self.n
-        self.N = self.l*(self.n+1)
-    
-    def getn(self):
+        self.sigma = sigma
+        self.ell = int(ceil(log2(q))) + 1
+        self.N = self.ell * (self.n + 1)
+        self.m = self.ell * self.n
+
+    def get_n(self) -> int:
         return self.n
-    
-    def getq(self):
+
+    def get_q(self) -> int:
         return self.q
-    
-    def getell(self):
-        return self.l
-    
-    def getm(self):
-        return self.m
-    
-    def getN(self):
-        return self.N
-    
-    def getSigma(self):
+
+    def get_sigma(self) -> float:
         return self.sigma
 
-    def __str__(self):
-        return f"GSWParams(L={self.L}, n={self.n}, q={self.q}, sigma={self.sigma}, l={self.l}, m={self.m}, N={self.N})"
+    def get_ell(self) -> int:
+        return self.ell
+
+    def get_N(self) -> int:
+        return self.N
+
+    def get_m(self) -> int:
+        return self.m
+
+    def __str__(self) -> str:
+        return f"GSWParams(n={self.n}, q={self.q}, sigma={self.sigma}, ell={self.ell}, N={self.N}, m={self.m})"
