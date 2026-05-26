@@ -16,13 +16,15 @@ class GSW:
     def SecretKeyGen(self) -> SecretKey:
         sk= SecretKey(self.params)
         self.__sk = sk
-        
+
     def PublicKeyGen(self) -> PublicKey:
         pk= PublicKey(self.__sk, self.params)
         self.pk=pk
 
-    def Enc(self, pk: PublicKey, mu: int) -> np.ndarray:
-        pass
+    def Enc(self, mu: int) -> np.ndarray:
+        R=np.random.randint(0,2,size=(self.params.getN(), self.params.getm()))
+        C=FlattenMatrix(mu * np.eye(self.params.getN(), dtype=np.int64) + BitDecompMatrix(R@self.pk.getPublicKey(), self.params.getell(), self.params.getq()), self.params.getell(), self.params.getq())
+        return C
 
     def Dec(self, sk: SecretKey, C: np.ndarray) -> int:
         pass
@@ -32,28 +34,28 @@ class GSW:
 
     def MultConst(self, C: np.ndarray, alpha: int) -> np.ndarray:
         M_alpha = FlattenMatrix(
-            alpha * np.eye(self.params.N, dtype=np.int64) % self.params.q,
-            self.params.ell,
-            self.params.q
+            alpha * np.eye(self.params.getN(), dtype=np.int64) % self.params.q,
+            self.params.getell(),
+            self.params.getq()
         )
         return FlattenMatrix(
-            (M_alpha @ C) % self.params.q,
-            self.params.ell,
-            self.params.q
+            (M_alpha @ C) % self.params.getq(),
+            self.params.getell(),
+            self.params.getq()
         )
 
     def Add(self, C1: np.ndarray, C2: np.ndarray) -> np.ndarray:
         return FlattenMatrix(
-            (C1 + C2) % self.params.q,
-            self.params.ell,
-            self.params.q
+            (C1 + C2) % self.params.getq(),
+            self.params.getell(),
+            self.params.getq()
         )
 
     def Mult(self, C1: np.ndarray, C2: np.ndarray) -> np.ndarray:
         return FlattenMatrix(
-            (C1 @ C2) % self.params.q,
-            self.params.ell,
-            self.params.q
+            (C1 @ C2) % self.params.getq(),
+            self.params.getell(),
+            self.params.getq()
         )
 
     def NAND(self, C1: np.ndarray, C2: np.ndarray) -> np.ndarray:
