@@ -38,9 +38,10 @@ class PublicKey:
     def getPublicKey(self) -> np.ndarray:
         return self.A
 
-# TODO Testes:
-params = GSWParams(n=3, q=16, sigma=3.2)
-g = SecretKey(params)
-print(g.getSecretKey())
-pk = PublicKey(g, params)
-print(pk.getPublicKey())
+
+if __name__ == "__main__": # TODO Testes:
+    params = GSWParams(L=5, n=3, q=16)
+    g = SecretKey(params)
+    print(g._SecretKey__s)
+    pk = PublicKey(g, params)
+    print(pk.getPublicKey())

@@ -20,9 +20,6 @@ class GSWScheme:
         self.__sk = SecretKey(self.params)
         return self.__sk
 
-    def getSecretKey(self) -> SecretKey:
-        return self.__sk
-
     def PublicKeyGen(self) -> PublicKey:
         self.pk = PublicKey(self.__sk, self.params)
         return self.pk
