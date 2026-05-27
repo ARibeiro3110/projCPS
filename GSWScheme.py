@@ -13,8 +13,8 @@ class GSWScheme:
         self.pk = None
         self.rng = np.random.default_rng(seed) # TODO: isto não está a ser usado
 
-    def Setup(self, n: int, q: int, sigma: float) -> None:
-        self.params = GSWParams(n=n, q=q, sigma=sigma)
+    def Setup(self, L: int, n: int, q: int) -> None:
+        self.params = GSWParams(L=L, n=n, q=q)
 
     def SecretKeyGen(self) -> SecretKey:
         self.__sk = SecretKey(self.params)

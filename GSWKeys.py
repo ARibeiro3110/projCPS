@@ -17,9 +17,6 @@ class SecretKey:
         self.__s = s
         self.__v = v
 
-    def getSecretKey(self) -> np.ndarray:
-        return self.__s
-
     def generatePublicKey(self, params: GSWParams) -> np.ndarray:
         n = params.get_n()
         q = params.get_q()

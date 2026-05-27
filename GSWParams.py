@@ -2,10 +2,11 @@ from numpy import ceil, log2
 
 class GSWParams:
 
-    def __init__(self, n: int, q: int, sigma: float):
+    def __init__(self, L:int, n: int, q: int):
+        self.L = L
         self.n = n
         self.q = q
-        self.sigma = sigma
+        self.sigma = 3.2 # TODO: escolher valor adequado
         self.ell = int(ceil(log2(q))) + 1
         self.N = self.ell * (self.n + 1)
         self.m = self.ell * self.n
