@@ -99,11 +99,12 @@ class GSWScheme:
 
 scheme = GSWScheme(seed=1)
 scheme.Setup(L=5, n=3, q=256)
+print("Parameters:\n ", scheme.params)
 sk = scheme.SecretKeyGen()
 pk = scheme.PublicKeyGen()
 print("Parameters:\n ", scheme.params)
 print("Secret Key:\n", sk.getSecretKey())
 print("Public Key:\n", pk.getPublicKey())
-C = scheme.Enc(pk, mu=0)
+C = scheme.Enc(pk, mu=1)
 print("Ciphertext:\n", C)
 print(scheme.Dec(sk, C))

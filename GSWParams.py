@@ -9,7 +9,7 @@ class GSWParams:
         self.ell = int(ceil(log2(q))) + 1
         self.N = self.ell * (self.n + 1)
         self.m = self.ell * self.n
-        self.sigma = q/(k*(8*(self.N+1)**self.L)) # TODO: Confirmar valor de k
+        self.sigma = 1.0 #q/(k*(8*(self.N+1)**self.L)) # TODO: Confirmar valor de k e add toy parameters and real parameters
 
     def get_n(self) -> int:
         return self.n
