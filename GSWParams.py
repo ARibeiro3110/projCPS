@@ -2,7 +2,7 @@ from numpy import ceil, log2
 
 class GSWParams:
 
-    def __init__(self, L:int, n: int, q: int, k: int = 10):
+    def __init__(self, L:int, n: int, q: int, k: int = 5):
         self.L = L
         self.n = n
         self.q = q

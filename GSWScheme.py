@@ -18,7 +18,7 @@ class GSWScheme:
 
     def SecretKeyGen(self) -> SecretKey:
         self.__sk = SecretKey(self.params)
-        return self.__sk.getSecretKey()
+        return self.__sk
 
     def PublicKeyGen(self) -> PublicKey:
         self.pk = PublicKey(self.__sk, self.params)
@@ -35,14 +35,17 @@ class GSWScheme:
 
         R = np.random.randint(0, 2, size=(N, m))
         C = FlattenMatrix(
-            mu * np.eye(N, dtype=np.int64) + BitDecompMatrix(R @ pk.A, ell, q),
+            mu * np.eye(N, dtype=np.int64) + BitDecompMatrix(R @ pk.getPublicKey(), ell, q),
             ell,
             q
         )
         return C
 
     def Dec(self, sk: SecretKey, C: np.ndarray) -> int:
-        pass
+        i=int(np.floor(np.log2(self.params.get_q())))-1
+        v = PowersOf2(sk.getSecretKey(), self.params.get_ell(), self.params.get_q())
+        x=(C[i] @ v) % self.params.get_q()
+        return round(x/v[i])
 
     def MPDec(self, sk: SecretKey, C: np.ndarray) -> int:
         pass
@@ -92,3 +95,15 @@ class GSWScheme:
             ell,
             q
         )
+
+
+scheme = GSWScheme(seed=1)
+scheme.Setup(L=5, n=3, q=256)
+sk = scheme.SecretKeyGen()
+pk = scheme.PublicKeyGen()
+print("Parameters:\n ", scheme.params)
+print("Secret Key:\n", sk.getSecretKey())
+print("Public Key:\n", pk.getPublicKey())
+C = scheme.Enc(pk, mu=0)
+print("Ciphertext:\n", C)
+print(scheme.Dec(sk, C))
