@@ -42,12 +42,13 @@ class GSWScheme:
         return C
 
     def Dec(self, sk: SecretKey, C: np.ndarray) -> int:
-        i=int(np.floor(np.log2(self.params.get_q())))-1
-        v = PowersOf2(sk.getSecretKey(), self.params.get_ell(), self.params.get_q())
-        x=(C[i] @ v) % self.params.get_q()
-        print("x:", x)
-        print("v[i]:", v[i])
-        return round(x/v[i])
+        q=self.params.get_q()
+        i=int(np.floor(np.log2(q)))-1
+        v = PowersOf2(sk.getSecretKey(), self.params.get_ell(), q)
+        x=(C[i] @ v) % q
+        x_centered=((x + q // 2) % q) - q // 2 #Como mensagens pequenas centramos em 0
+        print("x:", x_centered)
+        return round(x_centered/v[i])
 
     def MPDec(self, sk: SecretKey, C: np.ndarray) -> int:
         pass
@@ -100,16 +101,17 @@ class GSWScheme:
 
 
 scheme = GSWScheme(seed=1)
-scheme.Setup(L=5, n=3, q=512)
+scheme.Setup(L=5, n=3, q=513)
 print("Parameters:\n ", scheme.params)
 sk = scheme.SecretKeyGen()
 pk = scheme.PublicKeyGen()
 print("Parameters:\n ", scheme.params)
 print("Secret Key:\n", sk.getSecretKey())
 print("Public Key:\n", pk.getPublicKey())
+print("error e:\n", pk.getPublicKey()@sk.getSecretKey()%scheme.params.get_q())
 C1 = scheme.Enc(pk, mu=0)
-C2 = scheme.Enc(pk, mu=0)
-C3 = scheme.NAND(C1, C2)
-print("NAND Result:\n", scheme.Dec(sk, C3))
+#C2 = scheme.Enc(pk, mu=0)
+#C3 = scheme.NAND(C1, C2)
+#print("NAND Result:\n", scheme.Dec(sk, C3))
 print("Decrypted 1:\n", scheme.Dec(sk, C1))
-print("Decrypted 2:\n", scheme.Dec(sk, C2))
+#print("Decrypted 2:\n", scheme.Dec(sk, C2))

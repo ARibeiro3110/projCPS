@@ -11,7 +11,7 @@ class SecretKey:
         q = params.get_q()
         ell = params.get_ell()
         t = np.random.randint(0, q, size=(n,1))
-        s = np.concatenate((np.array([[1]]), -t), axis=0)
+        s = np.concatenate((np.array([[1]]), -t), axis=0)%q
         v = PowersOf2(s, ell, q)
         self.__t = t
         self.__s = s
@@ -32,9 +32,11 @@ class PublicKey:
         sigma = params.get_sigma()
 
         B = np.random.randint(0, q, size=(m,n))
+        print("B:\n", B)
         e = np.round(np.random.normal(0, sigma, size=(m,1))).astype(np.int64) #Não é mod q pq o erro tem q ser à volta de 0
         print("error e:\n", e)
-        b = (B @ sk.gett() + e) % q
+        b = (B @ sk.gett())%q + e
+        print("b:\n", b)
         self.A = np.concatenate((b, B), axis=1)
 
 
