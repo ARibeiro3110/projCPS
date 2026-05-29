@@ -4,7 +4,7 @@ def PowersOf2(b: np.ndarray, ell: int, q: int) -> np.ndarray: # dim(b) = k
     r = []
     for x in b:
         for j in range(ell):
-            r.append((1 << j) * int(x) % q)
+            r.append((1 << j) * int(x)%q)
     return np.array(r, dtype=np.int64) # dim = N = k * ell
 
 def BitDecompVector(a: np.ndarray, ell: int, q: int) -> np.ndarray: # dim(a) = k

@@ -46,12 +46,26 @@ class GSWScheme:
         i=int(np.floor(np.log2(q)))-1
         v = PowersOf2(sk.getSecretKey(), self.params.get_ell(), q)
         x=(C[i] @ v) % q
-        x_centered=((x + q // 2) % q) - q // 2 #Como mensagens pequenas centramos em 0
-        print("x:", x_centered)
-        return round(x_centered/v[i])
+        #x_centered=((x + q // 2) % q) - q // 2 #Como mensagens pequenas centramos em 0
+        #print("x:", x)
+        #print("x_centered:", x_centered)
+        return round(x/v[i]) %2 #TODO: Confirmar se há maneira de fazer sem usar mod 2
 
     def MPDec(self, sk: SecretKey, C: np.ndarray) -> int:
-        pass
+        q=self.params.get_q()
+        l=self.params.get_ell()
+        v=PowersOf2(sk.getSecretKey(), self.params.get_ell(), q)
+        mu=0
+        for i in range(l-1):
+            val= ((C[l-2-i] @ v)%q) - mu*(2**(l-2-i))
+            
+            val_centered = ((val + q // 2) % q) - q // 2
+
+            if abs(val_centered) > q // 4:
+                mu += (2 ** i)
+        return mu
+
+        
 
     def MultConst(self, C: np.ndarray, alpha: int) -> np.ndarray:
         ell = self.params.get_ell()
@@ -101,7 +115,7 @@ class GSWScheme:
 
 
 scheme = GSWScheme(seed=1)
-scheme.Setup(L=5, n=3, q=513)
+scheme.Setup(L=5, n=3, q=512)
 print("Parameters:\n ", scheme.params)
 sk = scheme.SecretKeyGen()
 pk = scheme.PublicKeyGen()
@@ -110,8 +124,10 @@ print("Secret Key:\n", sk.getSecretKey())
 print("Public Key:\n", pk.getPublicKey())
 print("error e:\n", pk.getPublicKey()@sk.getSecretKey()%scheme.params.get_q())
 C1 = scheme.Enc(pk, mu=0)
-#C2 = scheme.Enc(pk, mu=0)
-#C3 = scheme.NAND(C1, C2)
-#print("NAND Result:\n", scheme.Dec(sk, C3))
+C2 = scheme.Enc(pk, mu=1)
+C3 = scheme.NAND(C1, C2)
 print("Decrypted 1:\n", scheme.Dec(sk, C1))
-#print("Decrypted 2:\n", scheme.Dec(sk, C2))
+print("Decrypted 2:\n", scheme.Dec(sk, C2))
+print("NAND Result:\n", scheme.Dec(sk, C3))
+C4 = scheme.Enc(pk, mu=1)
+print("Decrypted 4:\n", scheme.MPDec(sk, C4))
