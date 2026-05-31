@@ -41,10 +41,4 @@ class PublicKey:
         return self.A
 
 
-if __name__ == "__main__": # TODO Testes:
-    params = GSWParams(L=5, n=3, q=16)
-    g = SecretKey(params)
-    print(g.gett())
-    print(g.getSecretKey())
-    pk = PublicKey(g, params)
-    print(pk.getPublicKey())
+

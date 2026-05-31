@@ -37,8 +37,3 @@ def FlattenMatrix(A: np.ndarray, ell: int, q: int) -> np.ndarray:
     return BitDecompMatrix(BitDecompInvMatrix(A, ell, q), ell, q)
 
 
-if __name__ == "__main__": # TODO Testes:
-    print(BitDecompVector(np.array([6,3]), 4, 16))
-    print(6>>1)
-    print(BitDecompInvVector(BitDecompVector(np.array([6,3]), 4, 16), 4, 16))
-    print(FlattenVector(np.array([6,3,4,5,1,0,2,1]), 4, 16))
