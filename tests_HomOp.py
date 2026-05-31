@@ -47,7 +47,7 @@ print("mu:", muconst)
 print("Decrypted ConstMult:", scheme.MPDec(sk, Cconst))
 
 print("\n##### MULT #####\n")
-print("\n##### MULT #####")
+
 Cmult = scheme.Mult(C1, C2)
 mumult = (mu1 * mu2) % scheme.params.get_q()
 print("mu:", mumult)
