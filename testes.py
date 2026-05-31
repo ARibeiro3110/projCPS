@@ -26,7 +26,7 @@ C2 = scheme.Enc(pk, mu=mu2)
 print("\nmu2:", mu2)
 print("Decrypted 2:", scheme.Dec(sk, C2))
 print("Error Decryption 2:", scheme.DecTest(sk, C2, mu=mu2))
-#C3 = scheme.NAND(C1, C2)
+
 for i in range(5):
 
     print("\n##### Iteration:", f"{i+1}", "#####")
