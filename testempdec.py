@@ -1,43 +1,42 @@
+import numpy as np
+
 from GSWParams import *
 from GSWGadgets import *
 from GSWKeys import *
 from GSWScheme import *
 
 
-import numpy as np
- 
-NUM_SAMPLES = 5  # número de mu aleatórios por configuração (excluindo mu=0)
- 
+NUM_SAMPLES = 5  # Número de mu aleatórios por configuração (excluindo mu=0)
+
 # Pares (n, q): q escolhido como potência de 2 adequada a cada n
 CONFIGS = [
-    (4,  2**5),
-    (8, 2**10),
+    (4,  2**5), # Exemplo de não funcionamento do MPDec
+    (8,  2**10),
     (16, 2**15),
     (16, 2**20),
     (32, 2**25),
     (32, 2**30)
-
 ]
- 
+
 for (n, q) in CONFIGS:
- 
+
     scheme = GSWScheme()
     scheme.Setup(L=0, n=n, q=q, hardness="toy")
     ell = scheme.params.get_ell()
-    max_mu = q - 1  # range válido para MPDec
- 
+    max_mu = q - 1 # Range válido para MPDec
+
     print("=" * 60)
     print(f"Parâmetros: n={n}, q={q}")
     print(f"  {scheme.params}")
     print(f"  Range válido de mu: [0, {max_mu}]\n")
- 
+
     sk = scheme.SecretKeyGen()
     scheme.PublicKeyGen(sk)
     pk = scheme.getPublicKey()
- 
+
     # mu=0 incluído sempre; depois NUM_SAMPLES aleatórios em Z_q
     mus = [0] + [int(np.random.randint(0, q)) for _ in range(NUM_SAMPLES)]
- 
+
     failures = 0
     for mu in mus:
         C = scheme.Enc(pk, mu=mu)
@@ -45,11 +44,10 @@ for (n, q) in CONFIGS:
         correct = (mu_dec == mu)
         if not correct:
             failures += 1
- 
+
         in_range = (mu <= max_mu)
         tag = "" if in_range else "  [mu fora do range válido de MPDec]"
         status = "OK" if correct else "FALHOU"
-        print(f"  mu={mu:<12}  MPDec={mu_dec:<12}  [{status}]{tag}")
- 
-    print(f"\n  Taxa de falha: {failures}/{len(mus)}")
-    print()
+        print(f"  mu={mu:<12} MPDec={mu_dec:<12} [{status}]{tag}")
+
+    print(f"\n  Taxa de falha: {failures}/{len(mus)}\n")

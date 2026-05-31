@@ -29,8 +29,8 @@ class GSWScheme:
         N = self.params.get_N()
         m = self.params.get_m()
 
-        R = np.random.randint(0, 2, size=(N, m))
-        C = FlattenMatrix(
+        R = np.random.randint(0, 2, size=(N, m)) # Uniform matrix in {0,1}^{N*m}
+        C = FlattenMatrix( # C=Flatten(mu*I_N + BitDecomp(R*A))
             mu * np.eye(N, dtype=np.int64) + BitDecompMatrix(R @ pk.getPublicKey(), ell, q),
             ell,
             q
@@ -38,36 +38,35 @@ class GSWScheme:
         return C
 
     def Dec(self, sk: SecretKey, C: np.ndarray) -> int:
-        q=self.params.get_q()
-        i=int(np.floor(np.log2(q)))-1
-        v = PowersOf2(sk.getSecretKey(), self.params.get_ell(), q)
-        x=(C[i] @ v) % q
-        x_centered=((x + q // 2) % q) - q // 2 #Como mensagens pequenas centramos em 0
-        return round(x_centered/v[i])%2  
+        q = self.params.get_q()
+        i = int(np.floor(np.log2(q))) - 1 # v_i in ]q/4, q/2]
+        v = sk.get_v()
+        x = (C[i] @ v) % q
+        x_centered = ((x + q // 2) % q) - q // 2 # Center around 0
+        return round(x_centered/v[i]) % 2
 
-    def DecTest(self, sk: SecretKey, C: np.ndarray, mu: int) -> int:
-        q=self.params.get_q()
-        i=int(np.floor(np.log2(q)))-1
-        v = PowersOf2(sk.getSecretKey(), self.params.get_ell(), q)
-        e=C[i] @ v- mu * v[i]
-        e_centered=((e + q // 2) % q) - q // 2
-        return abs(e_centered) 
-    
+    def CalculateDecError(self, sk: SecretKey, C: np.ndarray, mu: int) -> int:
+        q = self.params.get_q()
+        i = int(np.floor(np.log2(q)))-1
+        v = sk.get_v()
+        e = C[i] @ v - mu * v[i]
+        e_centered = ((e + q // 2) % q) - q // 2
+        return abs(e_centered)
+
     def MPDec(self, sk: SecretKey, C: np.ndarray) -> int:
-        q=self.params.get_q()
-        l=self.params.get_ell()
-        v=PowersOf2(sk.getSecretKey(), self.params.get_ell(), q)
-        mu=0
+        q = self.params.get_q()
+        l = self.params.get_ell()
+        v = sk.get_v()
+        mu = 0
+
         for i in range(l-1):
-            val= ((C[l-2-i] @ v)%q) - mu*(2**(l-2-i))
-            
+            shift = (l - 2) - i
+            val = ((C[shift] @ v) % q) - (mu << shift) # Equivalent to mu*(2**shift)
             val_centered = ((val + q // 2) % q) - q // 2
+            if abs(val_centered) > q // 4: # If the value is closer to q/2 than to 0, decode a 1
+                mu |= (1 << i) # Equivalent to += (2 ** i)
+        return mu
 
-            if abs(val_centered) > q // 4:
-                mu += (2 ** i)
-        return mu 
-
-        
 
     def MultConst(self, C: np.ndarray, alpha: int) -> np.ndarray:
         ell = self.params.get_ell()
@@ -114,4 +113,3 @@ class GSWScheme:
             ell,
             q
         )
-
