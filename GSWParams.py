@@ -1,4 +1,4 @@
-from numpy import ceil, log2, sqrt
+from numpy import floor, log2, sqrt
 
 class GSWParams:
 
@@ -6,13 +6,13 @@ class GSWParams:
         self.L = L
         self.n = n
         self.q = q
-        self.ell = int(ceil(log2(q))) + 1
+        self.ell = int(floor(log2(q))) + 1
         self.N = self.ell * (self.n + 1)
-        self.m = 2*self.ell * self.n #After lemma 1 it states that it suffices m>2nlog2(q) for (A,R.A) to be undist. from uniform
+        self.m = 2*self.ell * self.n # After lemma 1 it states that it suffices m > 2nlog2(q) for (A,R.A) to be undistinct from uniform
         if hardness == "standard":
-            self.sigma = q/(k*(8*sqrt(self.m)*((self.N+1)**self.L))) # TODO: Confirmar valor de k e add toy parameters and real parameters
+            self.sigma = q / (k * 8 * sqrt(self.m) * (self.N+1)**self.L) # Error below q/(8(N+1)^L) except for negligible probability
         else:
-            self.sigma =  3.2 #TODO: Confirmar valor de sigma para toy parameters
+            self.sigma = 3.2
 
     def get_n(self) -> int:
         return self.n
@@ -33,4 +33,4 @@ class GSWParams:
         return self.m
 
     def __str__(self) -> str:
-        return f"GSWParams(n={self.n}, q={self.q}, sigma={self.sigma}, ell={self.ell}, N={self.N}, m={self.m})"
+        return f"GSWParams(L={self.L}, n={self.n}, q={self.q}, sigma={self.sigma}, ell={self.ell}, N={self.N}, m={self.m})"
