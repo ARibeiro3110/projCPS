@@ -51,7 +51,7 @@ print("\n##### MULT #####\n")
 Cmult = scheme.Mult(C1, C2)
 mumult = (mu1 * mu2) % scheme.params.get_q()
 print("mu:", mumult)
-print("Decrypted Mult:", scheme.MPDec(sk, Cmult))
+print("Decrypted Mult:", scheme.MPDec(sk, Cmult)) #Não funciono pois o erro também depende de mu2
 
 mu3=0
 C3 = scheme.Enc(pk, mu=mu3)

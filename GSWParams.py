@@ -8,7 +8,7 @@ class GSWParams:
         self.q = q
         self.ell = int(floor(log2(q))) + 1
         self.N = self.ell * (self.n + 1)
-        self.m = 2*self.ell * self.n # After lemma 1 it states that it suffices m > 2nlog2(q) for (A,R.A) to be undistinct from uniform
+        self.m = 2*self.ell * self.n # After lemma 1 it states that it suffices m > 2nlog2(q) for (A,R.A) to be indistinguishable from uniform
         if hardness == "standard":
             self.sigma = q / (k * 8 * sqrt(self.m) * (self.N+1)**self.L) # Error below q/(8(N+1)^L) except for negligible probability
         else:
