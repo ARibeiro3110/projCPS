@@ -10,9 +10,13 @@ NUM_SAMPLES = 5  # número de mu aleatórios por configuração (excluindo mu=0)
  
 # Pares (n, q): q escolhido como potência de 2 adequada a cada n
 CONFIGS = [
-    (4,  2**14),
-    (8,  2**20),
-    (16, 2**30),
+    (4,  2**5),
+    (8, 2**10),
+    (16, 2**15),
+    (16, 2**20),
+    (32, 2**25),
+    (32, 2**30)
+
 ]
  
 for (n, q) in CONFIGS:
@@ -20,12 +24,12 @@ for (n, q) in CONFIGS:
     scheme = GSWScheme()
     scheme.Setup(L=0, n=n, q=q, hardness="toy")
     ell = scheme.params.get_ell()
-    max_mu = 2 ** (ell - 1) - 1  # range válido para MPDec
+    max_mu = q - 1  # range válido para MPDec
  
     print("=" * 60)
     print(f"Parâmetros: n={n}, q={q}")
     print(f"  {scheme.params}")
-    print(f"  Range válido de mu: [0, {max_mu}] ({ell-1} bits)\n")
+    print(f"  Range válido de mu: [0, {max_mu}]\n")
  
     sk = scheme.SecretKeyGen()
     scheme.PublicKeyGen(sk)
