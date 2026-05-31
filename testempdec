@@ -37,7 +37,7 @@ for (n, q) in CONFIGS:
  
     # mu=0 incluído sempre; depois NUM_SAMPLES aleatórios em Z_q
     mus = [0] + [int(np.random.randint(0, q)) for _ in range(NUM_SAMPLES)]
- 
+    
     failures = 0
     for mu in mus:
         C = scheme.Enc(pk, mu=mu)
@@ -52,4 +52,8 @@ for (n, q) in CONFIGS:
         print(f"  mu={mu:<12}  MPDec={mu_dec:<12}  [{status}]{tag}")
  
     print(f"\n  Taxa de falha: {failures}/{len(mus)}")
-    print()
+
+
+
+
+    
